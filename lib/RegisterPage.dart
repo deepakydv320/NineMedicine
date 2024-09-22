@@ -10,6 +10,10 @@ class Registerpage extends StatefulWidget {
 class _RegisterpageState extends State<Registerpage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Colors.amberAccent,
+    ),
+    );
   }
 }
