@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "810451973988",
+    "project_id": "ninemedicine",
+    "storage_bucket": "ninemedicine.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810451973988:android:82988c9194d39184a9ec71",
+        "android_client_info": {
+          "package_name": "com.example.ninemedicine"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8I_4FgEcVhBDQinQDzGpanT75CMskQpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
