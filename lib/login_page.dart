@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:ninemedicine/RegisterPage.dart';
 
 import 'Nevigetar/nevigetar.dart';
-import 'Profile/P_homepage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
