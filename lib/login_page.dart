@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // If login is successful, navigate to the home page or dashboard
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login successful')),
+        const SnackBar(content: Text('Login successful')),
       );
 
       Navigator.pushReplacement(
