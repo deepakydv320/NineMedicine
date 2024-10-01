@@ -1,13 +1,51 @@
 {
   "project_info": {
-    "project_number": "810451973988",
-    "project_id": "ninemedicine",
-    "storage_bucket": "ninemedicine.appspot.com"
+    "project_number": "1025929260635",
+    "project_id": "auth-test-b67e7",
+    "storage_bucket": "auth-test-b67e7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:810451973988:android:82988c9194d39184a9ec71",
+        "mobilesdk_app_id": "1:1025929260635:android:889e71945ff610bc9b997e",
+        "android_client_info": {
+          "package_name": "com.example.authtest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiLp5JzunaJT5TLdyNDphvSvjeF6-zL5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025929260635:android:d804293c35fdc2f59b997e",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiLp5JzunaJT5TLdyNDphvSvjeF6-zL5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025929260635:android:7df58fda700c8c889b997e",
         "android_client_info": {
           "package_name": "com.example.ninemedicine"
         }
@@ -15,7 +53,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD8I_4FgEcVhBDQinQDzGpanT75CMskQpI"
+          "current_key": "AIzaSyCiLp5JzunaJT5TLdyNDphvSvjeF6-zL5s"
         }
       ],
       "services": {

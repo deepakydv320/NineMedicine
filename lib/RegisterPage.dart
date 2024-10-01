@@ -1,7 +1,6 @@
-import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:ninemedicine/login_page.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -11,6 +10,12 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   late double screenHeight;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +24,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: Column(
         children: [
-          // First Container for the logo with deep orange background
           Container(
-            height: screenHeight * 0.35, // 35% of the screen height for the logo container
+            height: screenHeight * 0.35,
             decoration: BoxDecoration(
               color: Colors.green.shade900,
               borderRadius: BorderRadius.only(
@@ -31,14 +35,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Center(
               child: Image.asset(
                 'assets/logo.png',
-                height: screenHeight * 0.25, // 15% of the screen height for the logo
+                height: screenHeight * 0.25,
                 width: screenHeight * 0.25,
               ),
             ),
           ),
-          
-
-          // Second Container for the register form and content
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(24.0),
@@ -51,7 +52,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 20),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context); // Go back to login screen
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          );
                         },
                         child: RichText(
                           text: TextSpan(
@@ -60,14 +66,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 text: "Already a member? ",
                                 style: TextStyle(color: Colors.black54),
                               ),
-
                               TextSpan(
                                 text: "Login",
                                 style: TextStyle(color: Colors.black54),
-                                onEnter: (event) => LoginScreen,
                               ),
-
-
                             ],
                           ),
                         ),
@@ -88,6 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       children: [
         SizedBox(height: 13),
         TextFormField(
+          controller: _nameController,
           decoration: InputDecoration(
             labelText: 'Fullname',
             filled: true,
@@ -99,6 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         SizedBox(height: 10),
         TextFormField(
+          controller: _emailController,
           decoration: InputDecoration(
             labelText: 'Email',
             filled: true,
@@ -110,6 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         SizedBox(height: 10),
         TextFormField(
+          controller: _phoneController,
           decoration: InputDecoration(
             labelText: 'Phone Number',
             filled: true,
@@ -121,6 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         SizedBox(height: 10),
         TextFormField(
+          controller: _passwordController,
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'Password',
@@ -141,11 +147,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
           onPressed: () {
-
+            _registerUser();
           },
           child: Text('REGISTER', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
+  }
+
+  Future<void> _registerUser() async {
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'phone': _phoneController.text,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registration successful')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Email is already registered')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed')),
+        );
+      }
+    }
   }
 }
