@@ -198,8 +198,6 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         errorMessage = 'Login failed: ${e.message}';
       }
-
-      // Show error message in a snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );
