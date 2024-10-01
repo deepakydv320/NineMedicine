@@ -181,8 +181,6 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text('Login successful')),
       );
 
-      // Navigate to the desired screen after successful login
-      // Replace with your HomePage or any other page
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
