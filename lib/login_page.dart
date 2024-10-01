@@ -1,11 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ninemedicine/RegisterPage.dart';
 
-class LoginScreen extends StatelessWidget {
+import 'Nevigetar/nevigetar.dart';
+import 'Profile/P_homepage.dart';
+
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Column(
         children: [
@@ -25,7 +39,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -43,7 +56,8 @@ class LoginScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Registerpage()),
+                            MaterialPageRoute(
+                                builder: (context) => RegisterScreen()),
                           );
                         },
                         child: RichText(
@@ -78,8 +92,9 @@ class LoginScreen extends StatelessWidget {
   Widget _buildLoginForm(double screenHeight, double screenWidth) {
     return Column(
       children: [
-        SizedBox(height: 10,),
+        SizedBox(height: 10),
         TextFormField(
+          controller: _emailController,
           decoration: InputDecoration(
             labelText: 'Email',
             labelStyle: TextStyle(fontSize: screenWidth * 0.045),
@@ -96,6 +111,7 @@ class LoginScreen extends StatelessWidget {
         ),
         SizedBox(height: screenHeight * 0.03),
         TextFormField(
+          controller: _passwordController,
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'Password',
@@ -120,7 +136,8 @@ class LoginScreen extends StatelessWidget {
             },
             child: Text(
               'Forgot Password?',
-              style: TextStyle(color: Colors.black54, fontSize: screenWidth * 0.04),
+              style:
+              TextStyle(color: Colors.black54, fontSize: screenWidth * 0.04),
             ),
           ),
         ),
@@ -137,14 +154,53 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            // Login action
+            _loginUser();
           },
           child: Text(
             'LOGIN',
-            style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.045),
+            style:
+            TextStyle(color: Colors.white, fontSize: screenWidth * 0.045),
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _loginUser() async {
+    try {
+      // Sign in with email and password
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // If login is successful, navigate to the home page or dashboard
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login successful')),
+      );
+
+      // Navigate to the desired screen after successful login
+      // Replace with your HomePage or any other page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(), // Replace HomePage() with your home page widget
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      if (e.code == 'user-not-found') {
+        errorMessage = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        errorMessage = 'Wrong password provided.';
+      } else {
+        errorMessage = 'Login failed: ${e.message}';
+      }
+
+      // Show error message in a snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
+    }
   }
 }

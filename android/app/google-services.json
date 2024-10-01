@@ -1,64 +1,95 @@
 {
   "project_info": {
-    "project_number": "1025929260635",
-    "project_id": "auth-test-b67e7",
-    "storage_bucket": "auth-test-b67e7.appspot.com"
+    "project_number": "436573396589",
+    "firebase_url": "https://fir-demo-project-57fd1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fir-demo-project-57fd1",
+    "storage_bucket": "fir-demo-project-57fd1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1025929260635:android:889e71945ff610bc9b997e",
+        "mobilesdk_app_id": "1:436573396589:android:c7845b8e948e977b916964",
         "android_client_info": {
-          "package_name": "com.example.authtest"
+          "package_name": "com.example.fcm_vi"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "436573396589-ps96kg3d3j25ec3o10ekedo9ggpno68c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCiLp5JzunaJT5TLdyNDphvSvjeF6-zL5s"
+          "current_key": "AIzaSyA5rzvIClgP9SAFQXZjWm-wvgJ9IhxxeqY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436573396589-ps96kg3d3j25ec3o10ekedo9ggpno68c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1025929260635:android:d804293c35fdc2f59b997e",
+        "mobilesdk_app_id": "1:436573396589:android:1a1c83658311f187916964",
         "android_client_info": {
-          "package_name": "com.example.myapp"
+          "package_name": "com.example.firebasedemo"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "436573396589-ps96kg3d3j25ec3o10ekedo9ggpno68c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCiLp5JzunaJT5TLdyNDphvSvjeF6-zL5s"
+          "current_key": "AIzaSyA5rzvIClgP9SAFQXZjWm-wvgJ9IhxxeqY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436573396589-ps96kg3d3j25ec3o10ekedo9ggpno68c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1025929260635:android:7df58fda700c8c889b997e",
+        "mobilesdk_app_id": "1:436573396589:android:4085b9c68aecb7a9916964",
         "android_client_info": {
           "package_name": "com.example.ninemedicine"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "436573396589-ps96kg3d3j25ec3o10ekedo9ggpno68c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCiLp5JzunaJT5TLdyNDphvSvjeF6-zL5s"
+          "current_key": "AIzaSyA5rzvIClgP9SAFQXZjWm-wvgJ9IhxxeqY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436573396589-ps96kg3d3j25ec3o10ekedo9ggpno68c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

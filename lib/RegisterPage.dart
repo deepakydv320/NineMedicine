@@ -157,18 +157,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _registerUser() async {
     try {
-      // UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      //   email: _emailController.text,
-      //   password: _passwordController.text,
-      // );
-      await _firestore.collection('users').doc().set({
+      // Register user with email and password
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // Save user information in Firestore after successful registration
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'name': _nameController.text,
         'email': _emailController.text,
         'phone': _phoneController.text,
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Registration successful')),
       );
+
+      // Navigate to the login screen after successful registration
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -182,9 +188,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Registration failed')),
+          SnackBar(content: Text('Registration failed: ${e.message}')),
         );
       }
+
+      // Always navigate to the login screen after showing error
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ),
+      );
     }
   }
 }
