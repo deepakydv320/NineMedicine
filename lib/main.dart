@@ -54,7 +54,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _navigateToLogin() async {
-    await Future.delayed(Duration(seconds: 5), () {}); // Wait for 5 seconds
+    await Future.delayed(Duration(seconds: 5), () {
+
+    });
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => RegisterScreen()),
@@ -67,31 +69,28 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         decoration: BoxDecoration(
           color: Colors.green.shade900
-          // gradient: LinearGradient(
-          //   begin: Alignment.topCenter,
-          //   end: Alignment.bottomCenter,
-          // ),
+
         ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Animated PNG image with fade-in effect
+
               AnimatedOpacity(
                 opacity: _imageOpacity,
-                duration: Duration(seconds: 2), // Image fade-in duration
+                duration: Duration(seconds: 2),
                 child: Image.asset(
-                  'assets/logo.png', // Replace with your logo
+                  'assets/logo.png',
                   height: 250,
                   width: 250,
                 ),
               ),
-              SizedBox(height: 20), // Space between image and text
+              SizedBox(height: 20),
 
-              // Animated text with fade-in effect and colorful transition
+
               AnimatedOpacity(
                 opacity: _textOpacity,
-                duration: Duration(seconds: 2), // Text fade-in duration
+                duration: Duration(seconds: 2),
                 child: TweenAnimationBuilder(
                   tween: ColorTween(begin: Colors.white, end: Colors.yellow),
                   duration: Duration(seconds: 2), // Color transition duration

@@ -157,11 +157,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _registerUser() async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+      // UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      //   email: _emailController.text,
+      //   password: _passwordController.text,
+      // );
+      await _firestore.collection('users').doc().set({
         'name': _nameController.text,
         'email': _emailController.text,
         'phone': _phoneController.text,
