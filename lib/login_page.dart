@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: RichText(
                           text: TextSpan(
                             children: [
-                              TextSpan(
+                              const TextSpan(
                                 text: "Don't have an account? ",
                                 style: TextStyle(color: Colors.black54),
                               ),
