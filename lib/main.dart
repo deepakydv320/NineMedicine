@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ninemedicine/RegisterPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ninemedicine/Nevigetar/nevigetar.dart'; // HomeScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,18 +36,16 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _startAnimation();
-    _navigateToLogin();
+    _checkUserLoginStatus();
   }
 
   _startAnimation() {
-    // Delay the image fade-in
     Future.delayed(Duration(milliseconds: 500), () {
       setState(() {
         _imageOpacity = 1.0;
       });
     });
 
-    // Delay the text fade-in after the image
     Future.delayed(Duration(milliseconds: 1500), () {
       setState(() {
         _textOpacity = 1.0;
@@ -53,29 +53,32 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  _navigateToLogin() async {
-    await Future.delayed(Duration(seconds: 5), () {
+  _checkUserLoginStatus() async {
+    await Future.delayed(Duration(seconds: 5));
+    User? user = FirebaseAuth.instance.currentUser;
 
-    });
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => RegisterScreen()),
-    );
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => RegisterScreen()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          color: Colors.green.shade900
-
-        ),
+        decoration: BoxDecoration(color: Colors.green.shade900),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               AnimatedOpacity(
                 opacity: _imageOpacity,
                 duration: Duration(seconds: 2),
@@ -86,21 +89,19 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               SizedBox(height: 20),
-
-
               AnimatedOpacity(
                 opacity: _textOpacity,
                 duration: Duration(seconds: 2),
                 child: TweenAnimationBuilder(
                   tween: ColorTween(begin: Colors.white, end: Colors.yellow),
-                  duration: Duration(seconds: 2), // Color transition duration
+                  duration: Duration(seconds: 2),
                   builder: (context, Color? color, _) {
                     return Text(
                       "9medicine",
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white, // Animated color effect
+                        color: Colors.white,
                       ),
                     );
                   },

@@ -1,8 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ninemedicine/login_page.dart';  // Assuming this is the correct import path
-
-String? registeredEmail;
-String? registeredPassword;
+import 'package:ninemedicine/login_page.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -10,6 +9,10 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  late double screenHeight;
+  bool _isRegistering = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -17,7 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
+    screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Column(
@@ -41,37 +44,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(24.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildRegisterForm(),
-                    SizedBox(height: 20),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildRegisterForm(),
+                      SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          );
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Already a member? ",
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                              TextSpan(
+                                text: "Login",
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "Already a member? ",
-                              style: TextStyle(color: Colors.black54),
-                            ),
-                            TextSpan(
-                              text: "Login",
-                              style: TextStyle(color: Colors.black54),
-                            ),
-                          ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -88,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         TextFormField(
           controller: _nameController,
           decoration: InputDecoration(
-            labelText: 'Full Name',
+            labelText: 'Fullname',
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
@@ -143,33 +148,94 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
           onPressed: () {
-            String name = _nameController.text;
-            String email = _emailController.text;
-            String phone = _phoneController.text;
-            String password = _passwordController.text;
-
-            if (name.isNotEmpty && email.isNotEmpty && phone.isNotEmpty && password.isNotEmpty) {
-              // Store the email and password globally
-              registeredEmail = email;
-              registeredPassword = password;
-
-              // Navigate to the login page
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LoginScreen(),
-                ),
-              );
-            } else {
-              // Show error message if fields are empty
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Please fill in all fields')),
-              );
-            }
+            _registerUser();
           },
           child: Text('REGISTER', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
   }
+
+  // Future<void> _registerUser() async {
+  //   try {
+  //     UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+  //       email: _emailController.text,
+  //       password: _passwordController.text,
+  //     );
+  //     await _firestore.collection('users').doc().set({
+  //       'name': _nameController.text,
+  //       'email': _emailController.text,
+  //       'phone': _phoneController.text,
+  //     });
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Registration successful')),
+  //     );
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => LoginScreen(),
+  //       ),
+  //     );
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == 'email-already-in-use') {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Email is already registered')),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Registration failed')),
+  //       );
+  //     }
+  //   }
+  // }
+
+
+  Future<void> _registerUser() async {
+    if (_isRegistering) return;
+
+    setState(() {
+      _isRegistering = true;
+    });
+
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+
+      await _firestore.collection('User').doc(userCredential.user!.uid).set({
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'phone': _phoneController.text,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registration successful')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Email is already registered')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed')),
+        );
+      }
+    } finally {
+      setState(() {
+        _isRegistering = false;
+      });
+    }
+  }
 }
+
+

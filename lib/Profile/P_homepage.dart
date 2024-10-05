@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ninemedicine/login_page.dart';
 import 'edit_profile.dart';
 import 'my_orders.dart'; // Import the MyOrdersPage
 
@@ -148,7 +149,7 @@ class ProfileHomePage extends StatelessWidget {
         SizedBox(height: 20),
         TextButton(
           onPressed: () {
-            // Handle Log Out
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
           },
           child: Text(
             'Log out',

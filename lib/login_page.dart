@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ninemedicine/RegisterPage.dart';  // Assuming this is the correct import path
-
-String? registeredEmail;
-String? registeredPassword;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ninemedicine/Nevigetar/nevigetar.dart'; // Assuming this is your HomeScreen import
+import 'package:ninemedicine/RegisterPage.dart'; // Assuming this is your RegisterScreen import
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,8 +9,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Initialize FirebaseAuth
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoggingIn = false;
 
   @override
   void dispose() {
@@ -143,27 +144,56 @@ class _LoginScreenState extends State<LoginScreen> {
               borderRadius: BorderRadius.circular(30),
             ),
           ),
-          onPressed: () {
-            String email = _emailController.text;
-            String password = _passwordController.text;
-
-            // Check if email and password match the registered credentials
-            if (email == registeredEmail && password == registeredPassword) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Login successful')),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Invalid email or password')),
-              );
-            }
-          },
-          child: Text(
+          onPressed: _isLoggingIn ? null : _loginUser,
+          child: _isLoggingIn
+              ? CircularProgressIndicator(
+            color: Colors.white,
+          )
+              : Text(
             'LOGIN',
             style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.045),
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _loginUser() async {
+    setState(() {
+      _isLoggingIn = true;
+    });
+
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login successful')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'user-not-found') {
+        message = 'No user found with this email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Incorrect password.';
+      } else {
+        message = 'Login failed. Please try again.';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } finally {
+      setState(() {
+        _isLoggingIn = false;
+      });
+    }
   }
 }
