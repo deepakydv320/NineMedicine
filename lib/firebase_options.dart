@@ -22,7 +22,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -46,23 +46,27 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC3n3o_EXQ5Q047J6Y00cr2rnisNgPp3zE',
-    appId: '1:436573396589:web:c8664116dcc81e2b916964',
-    messagingSenderId: '436573396589',
-    projectId: 'fir-demo-project-57fd1',
-    authDomain: 'fir-demo-project-57fd1.firebaseapp.com',
-    databaseURL: 'https://fir-demo-project-57fd1-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'fir-demo-project-57fd1.appspot.com',
-    measurementId: 'G-XMST6WE7CS',
+    apiKey: 'AIzaSyA-C2wZ-uf9obdE4Qwx-Q9CokdOIMJ18YI',
+    appId: '1:1025929260635:web:7bbec643ac5236d29b997e',
+    messagingSenderId: '1025929260635',
+    projectId: 'auth-test-b67e7',
+    authDomain: 'auth-test-b67e7.firebaseapp.com',
+    storageBucket: 'auth-test-b67e7.appspot.com',
+    measurementId: 'G-DGY6Q3Y096',
   );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA5rzvIClgP9SAFQXZjWm-wvgJ9IhxxeqY',
-    appId: '1:436573396589:android:4085b9c68aecb7a9916964',
-    messagingSenderId: '436573396589',
-    projectId: 'fir-demo-project-57fd1',
-    databaseURL: 'https://fir-demo-project-57fd1-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'fir-demo-project-57fd1.appspot.com',
+    apiKey: 'AIzaSyCiLp5JzunaJT5TLdyNDphvSvjeF6-zL5s',
+    appId: '1:1025929260635:android:7df58fda700c8c889b997e',
+    messagingSenderId: '1025929260635',
+    projectId: 'auth-test-b67e7',
+    storageBucket: 'auth-test-b67e7.appspot.com',
   );
-
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAz2UhAtcl0eT6aeN2lJfOhP1z0vPCtHDk',
+    appId: '1:1025929260635:ios:c483ef6815b69e209b997e',
+    messagingSenderId: '1025929260635',
+    projectId: 'auth-test-b67e7',
+    storageBucket: 'auth-test-b67e7.appspot.com',
+    iosBundleId: 'com.example.ninemedicine',
+  );
 }

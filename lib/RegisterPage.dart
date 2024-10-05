@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ninemedicine/login_page.dart';
 
@@ -7,6 +9,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  late double screenHeight;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -14,32 +19,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
+    screenHeight = MediaQuery.of(context).size.height;
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Scaffold(
-        body: Column(
-          children: [
-            Container(
-              height: screenHeight * 0.35,
-              decoration: BoxDecoration(
-                color: Colors.green.shade900,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(80),
-                ),
-              ),
-              child: Center(
-                child: Image.asset(
-                  'assets/logo.png',
-                  height: screenHeight * 0.25,
-                  width: screenHeight * 0.25,
-                ),
+    return Scaffold(
+      body: Column(
+        children: [
+          Container(
+            height: screenHeight * 0.35,
+            decoration: BoxDecoration(
+              color: Colors.green.shade900,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(80),
               ),
             ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(24.0),
+            child: Center(
+              child: Image.asset(
+                'assets/logo.png',
+                height: screenHeight * 0.25,
+                width: screenHeight * 0.25,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(24.0),
+              child: Center(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -75,8 +79,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -88,7 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         TextFormField(
           controller: _nameController,
           decoration: InputDecoration(
-            labelText: 'Full Name',
+            labelText: 'Fullname',
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
@@ -143,11 +147,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
           onPressed: () {
-            // You can handle the button press here, but there's no registration functionality.
+            _registerUser();
           },
           child: Text('REGISTER', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
+  }
+
+  Future<void> _registerUser() async {
+    try {
+      // UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      //   email: _emailController.text,
+      //   password: _passwordController.text,
+      // );
+      await _firestore.collection('users').doc().set({
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'phone': _phoneController.text,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registration successful')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Email is already registered')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed')),
+        );
+      }
+    }
   }
 }
