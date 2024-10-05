@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:ninemedicine/RegisterPage.dart';
+import 'package:ninemedicine/RegisterPage.dart';  // Assuming this is the correct import path
 
-class LoginScreen extends StatelessWidget {
+String? registeredEmail;
+String? registeredPassword;
+
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -26,7 +44,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -79,8 +96,9 @@ class LoginScreen extends StatelessWidget {
   Widget _buildLoginForm(double screenHeight, double screenWidth) {
     return Column(
       children: [
-        SizedBox(height: 10,),
+        SizedBox(height: 10),
         TextFormField(
+          controller: _emailController,
           decoration: InputDecoration(
             labelText: 'Email',
             labelStyle: TextStyle(fontSize: screenWidth * 0.045),
@@ -97,6 +115,7 @@ class LoginScreen extends StatelessWidget {
         ),
         SizedBox(height: screenHeight * 0.03),
         TextFormField(
+          controller: _passwordController,
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'Password',
@@ -109,19 +128,6 @@ class LoginScreen extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(28),
-            ),
-          ),
-        ),
-        SizedBox(height: screenHeight * 0.015),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () {
-              // Forgot password logic
-            },
-            child: Text(
-              'Forgot Password?',
-              style: TextStyle(color: Colors.black54, fontSize: screenWidth * 0.04),
             ),
           ),
         ),
@@ -138,7 +144,19 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            // Login action
+            String email = _emailController.text;
+            String password = _passwordController.text;
+
+            // Check if email and password match the registered credentials
+            if (email == registeredEmail && password == registeredPassword) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Login successful')),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Invalid email or password')),
+              );
+            }
           },
           child: Text(
             'LOGIN',
