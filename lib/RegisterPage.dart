@@ -16,64 +16,67 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: screenHeight * 0.35,
-            decoration: BoxDecoration(
-              color: Colors.green.shade900,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(80),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Scaffold(
+        body: Column(
+          children: [
+            Container(
+              height: screenHeight * 0.35,
+              decoration: BoxDecoration(
+                color: Colors.green.shade900,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(80),
+                ),
               ),
-            ),
-            child: Center(
-              child: Image.asset(
-                'assets/logo.png',
-                height: screenHeight * 0.25,
-                width: screenHeight * 0.25,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(24.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildRegisterForm(),
-                    SizedBox(height: 20),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
-                          ),
-                        );
-                      },
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "Already a member? ",
-                              style: TextStyle(color: Colors.black54),
-                            ),
-                            TextSpan(
-                              text: "Login",
-                              style: TextStyle(color: Colors.black54),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+              child: Center(
+                child: Image.asset(
+                  'assets/logo.png',
+                  height: screenHeight * 0.25,
+                  width: screenHeight * 0.25,
                 ),
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(24.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildRegisterForm(),
+                      SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          );
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Already a member? ",
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                              TextSpan(
+                                text: "Login",
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
