@@ -19,8 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // List of widgets for each page
   final List<Widget> _pages = [
     Homepage(),
-    MyOrdersPage(),
     ReferAndEarnPage(),
+    MyOrdersPage(),
     ProfileHomePage(),
 
   ];

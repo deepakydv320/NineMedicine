@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FuturisticProfilePage extends StatefulWidget {
   @override
@@ -15,19 +17,49 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
   TextEditingController ageController = TextEditingController();
 
   String? gender;
+  String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+  }
+
+  Future<void> _getUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      userId = user.uid;
+
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (userDoc.exists) {
+        Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
+
+        setState(() {
+          firstNameController.text = data['firstName'] ?? '';
+          lastNameController.text = data['lastName'] ?? '';
+          emailController.text = data['email'] ?? '';
+          mobileController.text = data['mobile'] ?? '';
+          ageController.text = data['age']?.toString() ?? '';
+          gender = data['gender'] ?? '';
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Dark background
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text(
           'Edit Profile',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          style: TextStyle(color: Colors.white),
         ),
-
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -44,8 +76,7 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Profile Avatar
-               CircleAvatar(
+              CircleAvatar(
                 radius: 60,
                 backgroundColor: Colors.cyanAccent,
                 child: Icon(
@@ -55,32 +86,18 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
                 ),
               ),
               SizedBox(height: 30),
-
-              // First Name
               buildTextField('First Name', firstNameController),
               SizedBox(height: 15),
-
-              // Last Name
               buildTextField('Last Name', lastNameController),
               SizedBox(height: 15),
-
-              // Email
               buildTextField('Email ID', emailController, keyboardType: TextInputType.emailAddress),
               SizedBox(height: 15),
-
-              // Mobile Number
               buildTextField('Mobile Number', mobileController, keyboardType: TextInputType.phone),
               SizedBox(height: 15),
-
-              // Age
               buildTextField('Age', ageController, keyboardType: TextInputType.number),
               SizedBox(height: 15),
-
-              // Gender Selection (as buttons)
               buildGenderSelection(),
               SizedBox(height: 30),
-
-              // Save Button
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -111,7 +128,6 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
     );
   }
 
-  // A reusable method to create a text field with the glowing futuristic style
   Widget buildTextField(String label, TextEditingController controller, {TextInputType keyboardType = TextInputType.text}) {
     return TextFormField(
       controller: controller,
@@ -121,7 +137,7 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
         labelText: label,
         labelStyle: TextStyle(color: Colors.cyanAccent, fontSize: 16),
         filled: true,
-        fillColor: Colors.grey.withOpacity(0.2), // Translucent background
+        fillColor: Colors.grey.withOpacity(0.2),
         border: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.cyanAccent),
           borderRadius: BorderRadius.circular(30),
@@ -141,7 +157,6 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
     );
   }
 
-  // Gender selection as glowing buttons
   Widget buildGenderSelection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,7 +175,6 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
     );
   }
 
-  // Glowing button widget for gender selection
   Widget futuristicButton(String label, bool isSelected) {
     return ElevatedButton(
       onPressed: () {

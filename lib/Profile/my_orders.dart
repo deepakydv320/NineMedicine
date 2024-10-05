@@ -65,7 +65,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                   ),
                   Divider(),
 
-                  // Order Status Radio List
                   ListTile(
                     title: Text('Order status'),
                     subtitle: Column(
@@ -76,7 +75,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                           groupValue: _tempSelectedStatus,
                           onChanged: (value) {
                             setModalState(() {
-                              _tempSelectedStatus = value!; // Update temp state immediately
+                              _tempSelectedStatus = value!;
                             });
                           },
                         );
@@ -86,7 +85,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
 
                   SizedBox(height: 20),
 
-                  // Clear and Apply Buttons
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -94,7 +93,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                       ElevatedButton(
                         onPressed: () {
                           setModalState(() {
-                            _tempSelectedStatus = "All Orders"; // Reset selection to "All Orders"
+                            _tempSelectedStatus = "All Orders";
                           });
                         },
                         child: Text("Clear"),
@@ -108,12 +107,10 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                           ),
                         ),
                       ),
-
-                      // Apply Button
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            _selectedOrderStatus = _tempSelectedStatus; // Apply the selected status
+                            _selectedOrderStatus = _tempSelectedStatus;
                           });
                           Navigator.pop(context); // Close modal
                         },
@@ -138,7 +135,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
     );
   }
 
-  // Search Bar Widget
+
   Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
