@@ -15,7 +15,7 @@ class _ReferAndEarnPageState extends State<ReferAndEarnPage> {
       body: Container(
         color: Colors.green[100],
         child: Center(
-          child: Text("ReferAndEarnPage"),
+          child: Text("ReferAndEarnPagess"),
         ),
       ),
     );

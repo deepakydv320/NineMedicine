@@ -15,7 +15,7 @@ class _HomepageState extends State<Homepage> {
         color: Colors.blue[100],
         child: Center(
           child: Text(
-            "Home Page",
+            "Home Pages",
             style: TextStyle(fontSize: 24),
           ),
         ),
