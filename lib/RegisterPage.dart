@@ -10,6 +10,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   late double screenHeight;
+  bool _isRegistering = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _nameController = TextEditingController();
@@ -155,20 +156,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  // Future<void> _registerUser() async {
+  //   try {
+  //     UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+  //       email: _emailController.text,
+  //       password: _passwordController.text,
+  //     );
+  //     await _firestore.collection('users').doc().set({
+  //       'name': _nameController.text,
+  //       'email': _emailController.text,
+  //       'phone': _phoneController.text,
+  //     });
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Registration successful')),
+  //     );
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => LoginScreen(),
+  //       ),
+  //     );
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == 'email-already-in-use') {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Email is already registered')),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Registration failed')),
+  //       );
+  //     }
+  //   }
+  // }
+
+
   Future<void> _registerUser() async {
+    if (_isRegistering) return;
+
+    setState(() {
+      _isRegistering = true;
+    });
+
     try {
-      // UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      //   email: _emailController.text,
-      //   password: _passwordController.text,
-      // );
-      await _firestore.collection('users').doc().set({
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+
+      await _firestore.collection('User').doc(userCredential.user!.uid).set({
         'name': _nameController.text,
         'email': _emailController.text,
         'phone': _phoneController.text,
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Registration successful')),
       );
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -185,6 +230,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SnackBar(content: Text('Registration failed')),
         );
       }
+    } finally {
+      setState(() {
+        _isRegistering = false;
+      });
     }
   }
 }
+
+
