@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:ninemedicine/Profile/Health_articles.dart';
+import 'package:ninemedicine/Profile/Reminder.dart';
+import 'package:ninemedicine/Profile/help.dart';
+import 'package:ninemedicine/Profile/manage_patients.dart';
+import 'package:ninemedicine/Profile/referand_earn.dart';
 import 'edit_profile.dart';
-import 'my_orders.dart'; // Import the MyOrdersPage
+import 'manage_address.dart';
+import 'my_orders.dart';  // Import the MyOrdersPage
+import 'tm_wallet.dart';  // Import the new TMWalletPage
 
 class ProfileHomePage extends StatelessWidget {
   @override
@@ -49,7 +56,7 @@ class ProfileHomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '8651204362', // Example phone number, you can make it dynamic
+                '8651204362',  // Example phone number, you can make it dynamic
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -61,15 +68,15 @@ class ProfileHomePage extends StatelessWidget {
                   // Navigate to EditProfilePage
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FuturisticProfilePage()), // \m-0
-                    // nsure EditProfilePage is defined
-
+                    MaterialPageRoute(
+                      builder: (context) => FuturisticProfilePage(), // Ensure EditProfilePage is defined
+                    ),
                   );
                 },
                 child: Row(  // Added Row for icon and text
                   children: [
-                    Icon(Icons.edit, size: 18, color: Colors.blueAccent), // Edit icon
-                    SizedBox(width: 5), // Space between icon and text
+                    Icon(Icons.edit, size: 18, color: Colors.blueAccent),  // Edit icon
+                    SizedBox(width: 5),  // Space between icon and text
                     Text('Add your details'),
                   ],
                 ),
@@ -92,7 +99,7 @@ class ProfileHomePage extends StatelessWidget {
             // Navigate to MyOrdersPage when "My Orders" is tapped
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyOrdersPage()), // Navigates to MyOrdersPage
+              MaterialPageRoute(builder: (context) => MyOrdersPage()),  // Navigates to MyOrdersPage
             );
           },
         ),
@@ -100,20 +107,25 @@ class ProfileHomePage extends StatelessWidget {
           icon: Icons.account_balance_wallet,
           title: 'TM Wallet',
           onTap: () {
-            // Handle TM Wallet tap
+            // Navigate to TMWalletPage when "TM Wallet" is tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TMWalletPage()),  // Navigate to TM Wallet Page
+            );
           },
         ),
         buildMenuItem(
           icon: Icons.people,
           title: 'Manage Patients',
           onTap: () {
-            // Handle Manage Patients tap
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ManagePatientsPage(),));
           },
         ),
         buildMenuItem(
           icon: Icons.location_on,
           title: 'Manage Addresses',
           onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MajesticLocationPage(),));
             // Handle Manage Addresses tap
           },
         ),
@@ -121,6 +133,7 @@ class ProfileHomePage extends StatelessWidget {
           icon: Icons.monetization_on,
           title: 'Refer and Earn',
           onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ReferAndEarnPage(),));
             // Handle Refer and Earn tap
           },
         ),
@@ -128,6 +141,7 @@ class ProfileHomePage extends StatelessWidget {
           icon: Icons.notifications,
           title: 'Reminder',
           onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ReminderPage(),));
             // Handle Reminder tap
           },
         ),
@@ -135,6 +149,7 @@ class ProfileHomePage extends StatelessWidget {
           icon: Icons.article,
           title: 'Health Articles',
           onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HealthArticlesApp(),));
             // Handle Health Articles tap
           },
         ),
@@ -142,6 +157,7 @@ class ProfileHomePage extends StatelessWidget {
           icon: Icons.help_outline,
           title: 'Help',
           onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage(),));
             // Handle Help tap
           },
         ),
@@ -164,7 +180,7 @@ class ProfileHomePage extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Text(
-          'v7.3.3', // App version number, change as needed
+          'v7.3.3',  // App version number, change as needed
           style: TextStyle(
             color: Colors.grey,
           ),
