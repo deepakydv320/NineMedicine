@@ -5,9 +5,6 @@ import '../Profile/my_orders.dart';
 import 'ReferAndEarnPage.dart';
 import 'home page.dart';
 
-
-
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
