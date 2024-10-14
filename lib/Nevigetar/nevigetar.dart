@@ -19,9 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ReferAndEarnPage(),
     MyOrdersPage(),
     ProfileHomePage(),
-
   ];
-
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
