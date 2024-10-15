@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:ninemedicine/Profile/P_homepage.dart';
 
 class FuturisticProfilePage extends StatefulWidget {
+  final String userId;
+
+  FuturisticProfilePage({required this.userId, required String firstName, required String email});
+
   @override
   _FuturisticProfilePageState createState() => _FuturisticProfilePageState();
 }
@@ -17,37 +25,118 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
   TextEditingController ageController = TextEditingController();
 
   String? gender;
-  String? userId;
+  File? _profileImage;
 
   @override
   void initState() {
     super.initState();
-    _getUserData();
+    fetchUserData();
   }
 
-  Future<void> _getUserData() async {
+  Future<void> fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('User').doc(widget.userId).get();
+      if (userDoc.exists) {
+        Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
+        firstNameController.text = data['firstName'] ?? '';
+        lastNameController.text = data['lastName'] ?? '';
+        emailController.text = data['email'] ?? '';
+        mobileController.text = data['mobile'] ?? '';
+        ageController.text = data['age'] ?? '';
+        gender = data['gender'];
+        if (data['profileImage'] != null) {
+          setState(() {
+            _profileImage = File(data['profileImage']); // Optionally load the profile image
+          });
+        }
+      }
+    }
+  }
+
+  Future<void> _showImageSourceActionSheet() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 150,
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Text(
+                'Choose an option',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.camera_alt, size: 40, color: Colors.cyanAccent),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _pickImage(ImageSource.camera);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.photo, size: 40, color: Colors.cyanAccent),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _pickImage(ImageSource.gallery);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<String?> uploadProfileImage(File image) async {
+    String filePath = 'profile_images/${DateTime.now()}.png'; // Unique path
+    try {
+      await FirebaseStorage.instance.ref(filePath).putFile(image);
+      return await FirebaseStorage.instance.ref(filePath).getDownloadURL(); // Return the download URL
+    } catch (e) {
+      print("Error uploading image: $e");
+      return null; // Return null if there's an error
+    }
+  }
+
+  Future<void> saveUserProfile(String firstName, String email, String lastName, String mobile, String age, String? gender) async {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      userId = user.uid;
+      String userId = widget.userId; // Use passed user ID
+      String? imageUrl;
 
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-
-      if (userDoc.exists) {
-        Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
-
-        setState(() {
-          firstNameController.text = data['firstName'] ?? '';
-          lastNameController.text = data['lastName'] ?? '';
-          emailController.text = data['email'] ?? '';
-          mobileController.text = data['mobile'] ?? '';
-          ageController.text = data['age']?.toString() ?? '';
-          gender = data['gender'] ?? '';
-        });
+      if (_profileImage != null) {
+        imageUrl = await uploadProfileImage(_profileImage!); // Upload image and get URL
       }
+
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'firstName': firstName,
+        'email': email,
+        'lastName': lastName,
+        'mobile': mobile,
+        'age': age,
+        'gender': gender,
+        'profileImage': imageUrl, // Store image URL in Firestore
+      }, SetOptions(merge: true));
+
+      print('Profile saved successfully');
     }
   }
 
@@ -60,7 +149,7 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
           'Edit Profile',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.cyanAccent),
@@ -76,13 +165,21 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.cyanAccent,
-                child: Icon(
-                  Icons.person,
-                  size: 60,
-                  color: Colors.black,
+              GestureDetector(
+                onTap: _showImageSourceActionSheet,
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: Colors.cyanAccent,
+                  backgroundImage: _profileImage != null
+                      ? FileImage(_profileImage!) // Display selected image
+                      : null,
+                  child: _profileImage == null
+                      ? Icon(
+                    Icons.person,
+                    size: 60,
+                    color: Colors.black,
+                  )
+                      : null,
                 ),
               ),
               SizedBox(height: 30),
@@ -101,7 +198,21 @@ class _FuturisticProfilePageState extends State<FuturisticProfilePage> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    print('Profile saved');
+                    // Get user input and save to Firestore
+                    String firstName = firstNameController.text;
+                    String email = emailController.text;
+                    String lastName = lastNameController.text;
+                    String mobile = mobileController.text;
+                    String age = ageController.text;
+
+                    // Save profile information
+                    saveUserProfile(firstName, email, lastName, mobile, age, gender).then((_) {
+                      // After successful save, navigate to the Accounts page
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfileHomePage()), // Pass userName if needed
+                      );
+                    });
                   }
                 },
                 style: ElevatedButton.styleFrom(
