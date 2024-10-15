@@ -1,9 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ninemedicine/login_page.dart';
 import 'edit_profile.dart';
-import 'my_orders.dart'; // Import the MyOrdersPage
+import 'my_orders.dart';
 
-class ProfileHomePage extends StatelessWidget {
+
+class ProfileHomePage extends StatefulWidget {
+  @override
+  _ProfileHomePageState createState() => _ProfileHomePageState();
+}
+
+class _ProfileHomePageState extends State<ProfileHomePage> {
+  String userName = ''; // To hold user's name
+  String userEmail = ''; // To hold user's email
+  String profileImageUrl = ''; // To hold the URL of the profile image
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfile(); // Fetch user profile data from Firestore
+  }
+
+  // Fetch the user profile from Firestore
+  Future<void> fetchUserProfile() async {
+    User? user = FirebaseAuth.instance.currentUser; // Get the current user
+
+    if (user != null) {
+      String userId = user.uid;
+
+      // Fetch user data from Firestore
+      DocumentSnapshot doc = await FirebaseFirestore.instance.collection('User').doc(userId).get();
+
+      if (doc.exists) {
+        print('User data: ${doc.data()}'); // Debugging statement to check data fetched
+        setState(() {
+          userName = doc['name'] ?? 'User'; // Fetch the user's name
+          userEmail = doc['email'] ?? 'No email provided'; // Fetch the user's email
+          profileImageUrl = doc['profileImage'] ?? ''; // Fetch the profile image URL
+        });
+      } else {
+        print('User document does not exist');
+      }
+    } else {
+      print('No user is signed in');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,16 +57,16 @@ class ProfileHomePage extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            buildHeader(context),  // Pass context here
+            buildHeader(context),
             SizedBox(height: 20),
-            buildMenuItems(context),  // Pass context here
+            buildMenuItems(context),
           ],
         ),
       ),
     );
   }
 
-  // Header section with user's phone number and add details button
+  // Header section with user's name, email, and profile image
   Widget buildHeader(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16),
@@ -43,17 +86,30 @@ class ProfileHomePage extends StatelessWidget {
           CircleAvatar(
             radius: 30,
             backgroundColor: Colors.blueAccent,
-            child: Icon(Icons.person, size: 40, color: Colors.white),
+            backgroundImage: profileImageUrl.isNotEmpty // Load the profile image if available
+                ? NetworkImage(profileImageUrl)
+                : null,
+            child: profileImageUrl.isEmpty
+                ? Icon(Icons.person, size: 40, color: Colors.white) // Default icon
+                : null,
           ),
           SizedBox(width: 20),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '8651204362', // Example phone number, you can make it dynamic
+                userName.isNotEmpty ? userName : 'User', // Display user name or default
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                userEmail.isNotEmpty ? userEmail : 'No email provided', // Display user email
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
                 ),
               ),
               SizedBox(height: 8),
@@ -62,16 +118,20 @@ class ProfileHomePage extends StatelessWidget {
                   // Navigate to EditProfilePage
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FuturisticProfilePage()), // \m-0
-                    // nsure EditProfilePage is defined
-
+                    MaterialPageRoute(
+                      builder: (context) => FuturisticProfilePage(
+                        firstName: userName, // Pass the user's first name
+                        email: userEmail, // Pass the user's email
+                        userId: '', // You can pass the user ID if needed
+                      ),
+                    ),
                   );
                 },
                 child: Row(  // Added Row for icon and text
                   children: [
                     Icon(Icons.edit, size: 18, color: Colors.blueAccent), // Edit icon
                     SizedBox(width: 5), // Space between icon and text
-                    Text('Add your details'),
+                    Text('Edit Profile'),
                   ],
                 ),
               ),
@@ -149,7 +209,10 @@ class ProfileHomePage extends StatelessWidget {
         SizedBox(height: 20),
         TextButton(
           onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen(),),
+            );
           },
           child: Text(
             'Log out',

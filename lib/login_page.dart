@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:ninemedicine/RegisterPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ninemedicine/Nevigetar/nevigetar.dart'; // Assuming this is your HomeScreen import
+import 'package:ninemedicine/RegisterPage.dart'; // Assuming this is your RegisterScreen import
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Initialize FirebaseAuth
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoggingIn = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -26,7 +45,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -44,7 +62,8 @@ class LoginScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => RegisterScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => RegisterScreen()),
                           );
                         },
                         child: RichText(
@@ -79,8 +98,9 @@ class LoginScreen extends StatelessWidget {
   Widget _buildLoginForm(double screenHeight, double screenWidth) {
     return Column(
       children: [
-        SizedBox(height: 10,),
+        SizedBox(height: 10),
         TextFormField(
+          controller: _emailController,
           decoration: InputDecoration(
             labelText: 'Email',
             labelStyle: TextStyle(fontSize: screenWidth * 0.045),
@@ -97,6 +117,7 @@ class LoginScreen extends StatelessWidget {
         ),
         SizedBox(height: screenHeight * 0.03),
         TextFormField(
+          controller: _passwordController,
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'Password',
@@ -112,19 +133,6 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: screenHeight * 0.015),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () {
-              // Forgot password logic
-            },
-            child: Text(
-              'Forgot Password?',
-              style: TextStyle(color: Colors.black54, fontSize: screenWidth * 0.04),
-            ),
-          ),
-        ),
         SizedBox(height: screenHeight * 0.03),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -137,15 +145,57 @@ class LoginScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
             ),
           ),
-          onPressed: () {
-            // Login action
-          },
-          child: Text(
-            'LOGIN',
-            style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.045),
-          ),
+          onPressed: _isLoggingIn ? null : _loginUser,
+          child: _isLoggingIn
+              ? CircularProgressIndicator(
+                  color: Colors.white,
+                )
+              : Text(
+                  'LOGIN',
+                  style: TextStyle(
+                      color: Colors.white, fontSize: screenWidth * 0.045),
+                ),
         ),
       ],
     );
+  }
+
+  Future<void> _loginUser() async {
+    setState(() {
+      _isLoggingIn = true;
+    });
+
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login successful')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'user-not-found') {
+        message = 'No user found with this email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Incorrect password.';
+      } else {
+        message = 'Login failed. Please try again.';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } finally {
+      setState(() {
+        _isLoggingIn = false;
+      });
+    }
   }
 }
