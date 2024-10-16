@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ninemedicine/Profile/Need%20help.dart';
 import 'package:ninemedicine/login_page.dart';
+import 'Manage Patients.dart';
 import 'edit_profile.dart';
 import 'my_orders.dart';
 
@@ -168,14 +170,17 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
           icon: Icons.people,
           title: 'Manage Patients',
           onTap: () {
-            // Handle Manage Patients tap
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>ManagePatientsScreen()), // Navigate to HelpPage
+            );
           },
         ),
         buildMenuItem(
           icon: Icons.location_on,
           title: 'Manage Addresses',
           onTap: () {
-            // Handle Manage Addresses tap
+
           },
         ),
         buildMenuItem(
@@ -203,9 +208,14 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
           icon: Icons.help_outline,
           title: 'Help',
           onTap: () {
-            // Handle Help tap
+            // Navigate to HelpPage when "Help" is tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>NeedHelpPage()), // Navigate to HelpPage
+            );
           },
         ),
+
         SizedBox(height: 20),
         TextButton(
           onPressed: () {
