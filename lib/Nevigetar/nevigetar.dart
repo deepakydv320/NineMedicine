@@ -5,9 +5,6 @@ import '../Profile/my_orders.dart';
 import 'ReferAndEarnPage.dart';
 import 'home page.dart';
 
-
-
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -22,9 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ReferAndEarnPage(),
     MyOrdersPage(),
     ProfileHomePage(),
-
   ];
-
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;

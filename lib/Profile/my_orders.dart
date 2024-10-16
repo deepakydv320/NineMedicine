@@ -75,7 +75,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                           groupValue: _tempSelectedStatus,
                           onChanged: (value) {
                             setModalState(() {
-                              _tempSelectedStatus = value!;
                             });
                           },
                         );
@@ -85,7 +84,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
 
                   SizedBox(height: 20),
 
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -93,7 +91,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                       ElevatedButton(
                         onPressed: () {
                           setModalState(() {
-                            _tempSelectedStatus = "All Orders";
                           });
                         },
                         child: Text("Clear"),
@@ -110,7 +107,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            _selectedOrderStatus = _tempSelectedStatus;
                           });
                           Navigator.pop(context); // Close modal
                         },
@@ -134,7 +130,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
       },
     );
   }
-
 
   Widget _buildSearchBar() {
     return Padding(
